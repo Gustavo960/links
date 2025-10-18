@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Cifra LLSecrets</title>
+  <style>
+    body {
+      background-color: white;
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    textarea {
+      width: 100%;
+      height: 100px;
+    }
+    button {
+      margin-top: 10px;
+      margin-right: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Cifra LLSecrets 🔐</h1>
+
+  <label>Texto:</label>
+  <textarea id="inputText"></textarea>
+
+  <br/>
+  <button onclick="encrypt()">Cifrar</button>
+  <button onclick="decrypt()">Decifrar</button>
+
+  <h3>Resultado:</h3>
+  <textarea id="outputText" readonly></textarea>
+
+  <script>
+    const passphrase = 'llsecrets';
+    const salt = new TextEncoder().encode('llsecrets_salt');
+    const iterations = 100000;
+
+    async function deriveKeyAndIV(pass) {
+      const enc = new TextEncoder();
+      const keyMaterial = await window.crypto.subtle.importKey(
+        'raw',
+        enc.encode(pass),
+        { name: 'PBKDF2' },
+        false,
+        ['deriveBits', 'deriveKey']
+      );
+
+      const bits = await crypto.subtle.deriveBits(
+        {
+          name: 'PBKDF2',
+          salt,
+          iterations,
+          hash: 'SHA-256',
+        },
+        keyMaterial,
+        384
+      );
+
+      const bytes = new Uint8Array(bits);
+      const key = bytes.slice(0, 32);
+      const iv = bytes.slice(32, 48);
+
+      return { key, iv };
+    }
+
+    async function encrypt() {
+      const text = document.getElementById("inputText").value;
+      const { key, iv } = await deriveKeyAndIV(passphrase);
+
+      const encoded = new TextEncoder().encode(text);
+
+      const cryptoKey = await crypto.subtle.importKey(
+        'raw',
+        key,
+        { name: 'AES-CBC' },
+        false,
+        ['encrypt']
+      );
+
+      const encrypted = await crypto.subtle.encrypt(
+        {
+          name: 'AES-CBC',
+          iv
+        },
+        cryptoKey,
+        encoded
+      );
+
+      const base64 = btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+      document.getElementById("outputText").value = base64;
+    }
+
+    async function decrypt() {
+      const base64 = document.getElementById("inputText").value;
+      const binary = atob(base64);
+      const data = new Uint8Array([...binary].map(c => c.charCodeAt(0)));
+
+      const { key, iv } = await deriveKeyAndIV(passphrase);
+
+      const cryptoKey = await crypto.subtle.importKey(
+        'raw',
+        key,
+        { name: 'AES-CBC' },
+        false,
+        ['decrypt']
+      );
+
+      try {
+        const decrypted = await crypto.subtle.decrypt(
+          {
+            name: 'AES-CBC',
+            iv
+          },
+          cryptoKey,
+          data
+        );
+
+        const text = new TextDecoder().decode(decrypted);
+        document.getElementById("outputText").value = text;
+      } catch (e) {
+        document.getElementById("outputText").value = "[ERRO] Texto inválido ou corrompido.";
+      }
+    }
+  </script>
+</body>
+</html>

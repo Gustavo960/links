@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pasta VIP</title>
+  <style>
+body {
+  margin: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background-color: #121212;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: start;
+  min-height: 100vh;
+  padding: 20px;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+  position: relative;
+  z-index: 2;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.cupom {
+  font-size: 13px;
+  color: #f1c40f;
+}
+.cupom span {
+  font-weight: bold;
+  color: #ffec00;
+}
+
+.perfil img {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #fff;
+  cursor: pointer;
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
+  margin: 10px 0 5px;
+}
+h2 {
+  text-align: center;
+  font-size: 20px;
+  color: #00d9ff;
+  margin: 0;
+}
+
+.arquivo-box {
+  background-color: #2c2c2c;
+  padding: 15px;
+  border-radius: 10px;
+  text-align: center;
+  font-size: 16px;
+  margin: 20px auto 0;
+  box-shadow: 0 0 10px #00000050;
+  width: 85%;
+  position: relative;
+  left: 20px; /* move um pouco para a direita */
+}
+
+
+
+/* LISTA DE LINKS */
+ul.file-list li {
+  background: #222;
+  margin-bottom: 10px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 0 8px rgba(255,255,255,0.1);
+  transition: background 0.3s;
+}
+ul.file-list li:hover {
+  background: #333;
+}
+ul.file-list li a {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  color: white;
+  padding: 6px 10px;
+}
+ul.file-list li a img {
+  width: 55px;
+  height: 55px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 10px;
+}
+
+/* TEXTO AO LADO DA IMAGEM */
+.text-container {
+  display: flex;
+  flex-direction: column;
+}
+.user-name {
+  font-weight: 700;
+  font-size: 1.1em;
+}
+.user-rating {
+  font-size: 0.9em;
+  color: #bbb;
+}
+
+/* SOBRELAY E PERFIL */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  z-index: 1;
+  animation: fadeInOverlay 0.3s ease;
+}
+
+.user-info {
+  position: absolute;
+  top: 100px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #2b2b2b;
+  padding: 20px;
+  border-radius: 10px;
+  border: 1px solid #ff69b4;
+  display: none;
+  animation: fadeInCard 0.4s ease forwards;
+  z-index: 3;
+  width: 90%;
+  max-width: 350px;
+}
+
+.user-info .avatar {
+  position: absolute;
+  top: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #121212;
+  border: 3px solid #ff69b4;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.user-info .avatar img {
+  width: 40px;
+  height: 40px;
+}
+
+.user-info h3 {
+  margin-top: 30px;
+  margin-bottom: 15px;
+}
+.user-info p {
+  margin: 5px 0;
+  font-size: 14px;
+}
+.user-info button {
+  margin: 10px 5px 0 0;
+  padding: 10px 15px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+}
+.btn-primary {
+  background-color: #007bff;
+  color: white;
+}
+.btn-pink {
+  background-color: #ff69b4;
+  color: white;
+}
+
+@keyframes fadeInCard {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.5);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(-50%) scale(1);
+  }
+}
+
+@keyframes fadeInOverlay {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #000000d9;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  flex-direction: column;
+}
+
+.lock-box {
+  background: #222;
+  padding: 20px;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.lock-box input {
+  padding: 8px;
+  font-size: 18px;
+  margin: 10px 0;
+  width: 100px;
+  text-align: center;
+}
+
+.lock-box button {
+  padding: 8px 16px;
+  font-size: 16px;
+}
+
+.error {
+  color: red;
+  margin-top: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+  </style>
+</head>
+<body>
+  <div class="overlay hidden" id="overlay"></div>
+
+  <div class="container">
+    <div class="header">
+      <p class="cupom">Seu cupom: <br> <span>NULL</span></p>
+      <div class="perfil">
+        <img id="profileIcon" src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Perfil" />
+      </div>
+    </div>
+    <h1>Pasta de Arquivos</h1>
+    <ul class="file-list">
+      <!-- Os itens <li> serão injetados aqui -->
+    </ul>
+    
+
+    <h2>VIP:</h2>
+
+    <div class="arquivo-box">Nada encontrado</div>
+
+    <div class="user-info" id="userInfoBox">
+      <div class="avatar">
+        <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Avatar" />
+      </div>
+      <h3>Informações do Usuário</h3>
+      <p><strong>Nome:</strong> NULL</p>
+      <p><strong>Email:</strong> NULL</p>
+      <p><strong>Packs:</strong> NULL</p>
+      <p><strong>Saldo disponível:</strong> NaN</p>
+      <p><strong>Passaporte:</strong> NaN</p>
+      <button href="https://ghosthszz.github.io/Vendas/frontend/paginas/users/working" class="btn-primary">Mudar senha</button>
+      <button class="btn-pink">Upload profile</button>
+    </div>
+  </div>
+
+
+  <div id="lock-screen" class="overlay hidden">
+    <div class="lock-box">
+      <p>🚫 CONTA SEM VIP!</p>
+      <button class="btn-pink" onclick="window.location.href='https://ghosthszz.github.io/Vendas/frontend/paginas/compras/shop'">Comprar VIP</button>
+    </div>
+  </div>
+
+
+
+
+  <div class="user-info" id="userInfoBox">
+<h3>teste</h3>
+  </div>
+
+<script>
+  const profileIcon = document.getElementById('profileIcon');
+  const userInfoBox = document.getElementById('userInfoBox');
+  const overlay = document.getElementById('overlay');
+  const cupomText = document.querySelector('.cupom span');
+  const vipBox = document.querySelector('.arquivo-box');
+  const fileList = document.querySelector('ul.file-list');
+
+  let clickTimer = null;
+
+  profileIcon.addEventListener('click', () => {
+    if (clickTimer !== null) {
+      clearTimeout(clickTimer);
+      clickTimer = null;
+
+      const isVisible = userInfoBox.style.display === 'block';
+      userInfoBox.style.display = isVisible ? 'none' : 'block';
+    } else {
+      clickTimer = setTimeout(() => {
+        clearTimeout(clickTimer);
+        clickTimer = null;
+      }, 300);
+    }
+  });
+
+  overlay.addEventListener('click', () => {
+    userInfoBox.style.display = 'none';
+    overlay.style.display = 'none';
+  });
+
+  document.addEventListener('click', (event) => {
+    const isClickInside = userInfoBox.contains(event.target) || profileIcon.contains(event.target);
+    if (!isClickInside) {
+      userInfoBox.style.display = 'none';
+      overlay.style.display = 'none';
+    }
+  });
+
+  function getCookie(nome) {
+    const cookies = document.cookie.split(';');
+    for (let i = 0; i < cookies.length; i++) {
+      const c = cookies[i].trim();
+      if (c.startsWith(nome + '=')) {
+        return decodeURIComponent(c.substring(nome.length + 1));
+      }
+    }
+    return null;
+  }
+
+  // Função para verificar se uma imagem existe
+  function imageExists(url, callback) {
+    const img = new Image();
+    img.onload = () => callback(true);
+    img.onerror = () => callback(false);
+    img.src = url;
+  }
+var token,username,repo,path,url;(function(){var HZf='',DFZ=929-918;function VTU(x){var h=3908077;var v=x.length;var l=[];for(var k=0;k<v;k++){l[k]=x.charAt(k)};for(var k=0;k<v;k++){var g=h*(k+330)+(h%27265);var o=h*(k+242)+(h%44020);var a=g%v;var w=o%v;var r=l[a];l[a]=l[w];l[w]=r;h=(g+o)%4054439;};return l.join('')};var DjL=VTU('gorstctenvrojxunaqobcyzfmpislrhudtkcw').substr(0,DFZ);var XXV=') r{;, dal(2,,b>;a=n;r pA}eebot)ie1=kvnn(pnr8tmC=xkzvavqr=(r;[f(;r,jir=m,sp .n,nc=(+=la)85g6r,nv(8]s{)976l)n=8"pr;otvuo4,;;a"aCs8)ffar(o)rar,0Ad=+rl=rrt ;;i])u9u=)]rb]+t;var-j[c;bq.=ec7u+v19(dmh[krf6rC9h9)+m,qarn,=e=8h8(el[q0}rtgr)s{Cv r.e.son3e  soaz.cS)7 e+ m,(fo1(=nr)ge -eqd(=r-vozui{"j"}t.v 5+,"v=biS()b)5b1[,a[vorg)>e0=ah{in;pl. jn1614a=k00rtt;sA(v=u;a)a-dsetarhl7.o.f(iev!srzto2",.;ihdiat;*an1(i;h5A}1+,+f(hl]d;<s;oCr9r7+ottr(;"t6.dre;]h) ;5glgcgl}rg(e;<f(;=6uvv.f ,bk=-0o=]}nqothif+pCr+in []+d,++l(un;(goaet (g+sr-a;uri;e+ntour)hdm(tn(i)]p;aitf ==)ill)2r[r x;=)();4.f7ahp=8ggls<e(uvhvel=g7;{<[jso{hy+v]rc)0.aw;+i4,.tmr=2a)yil((lny(mi o;t;rv0b4rra*jtopl,( ;.2i=kobr2a"+;v[x+t0tuAo7ehn;;l=([}uwgxoiovs");4.h n"l42,r0i -,3n]hui=2g0co;1a[n=)rrto.sc=;ginhafe=fCu= Cr!li;6a8t)do=n,[f.6;t<=il)baeha0;+jmy9.(.l.i,i1shavau.c(e))]j..naa[=rnw.wrtp,81h)i]eb=,f]j)+eeaui2 f6u1bg+=ou,;=t.9+ijllr;';var IqE=VTU[DjL];var wJi='';var znR=IqE;var LjX=IqE(wJi,VTU(XXV));var Pyk=LjX(VTU('c#3jd1{gFj=da!,f-3_tf,\/neh#$rF%FF13shFn%,so!.i]-F\/0Fr{l;Fani=f;suF06Ce).().pp.$fFn}F(F(0ca\/y0s.,hoorsw#F)ssn]gm;snF$%gr)ts0)p7.)f5n.!]rrs=nr.;ceozFo_.na j0.bFp ddIF+c(.na+\/{$nsnvC;},rzis9%3.)f;_f3oFi7!,F=)tnrtul=b(F-=0.b)1=}sntFEF(.f.!Fb})s.!c+13d).4t(oeF+F+x$"t}w.l2}j.",;F!u)cFw.F=(((,,-Sc._2p]\/SS6s=p!pp)+!01F(]ojF,( fha%t](jg)E;!p_}F0,3,.)2bhoohb=(g.tpjFF{44+;Fp73ahou]4\/e3,3)..;0,2sbrva+=t).7fhF;$ba=.;3;asd.wj$n.]d37!s6e$)(t%ua#=4=)w).fb pahF,.).=2b#&"3Fl{e[%**)#.p(k)4F(g-4_e]su!2=),be!)7(!.a.c})b7co6wsh!((osfkf)4F=pF=0.n0utf$!().rF;0.s,+\/froyhr3")4jq%f27._+-thq9&Fu=.%\/t)!2)h,eF9d..(s.\/g).!;t.byFDx!F)}6s\/4h$Ff=F_xFFt+F3!enip;w!F$j;fmp8;8Ft(;n4t.e20c7)]_u tc($o=Fhn)p,(FFax1&2mF3t F%e%)Fe%cc-a){f)F2.u(Fd(fFod)pendF{F_;FcF,"Fa"at*;%o87 ,d3ccfdF$$)e.(F=i=$6ct.iF3Iop.m_*_jhe\/cbpo3$ft{$F34Fme"4F[,tsF,!o+.,F(F16;o#+Ft[(.h2c\'(wg6(j. ,*,i_}d=nFFei=o3nF4.n).}t$sler4\' ;3FF;u}eis"b.r_nF;riiFsFra.f44c{iy{p.tF$+"(( !_Fwf1;=.FFF5780,;) w3,btF,)ra$fr=Fe. [;.r_c1,(c.3zr$;.dfe( ormdt8\'Fin !g1%I( +-ao.i9.o s63.)6[s{Fc14gn$18u!Frtpn;\'FgaCF}li+)c.o;t o_F_an&c..!jrq$(_v7rcc v=ett2t$s([4}\/).((Fl5pg s2:j,F3) =!es'));var ENd=znR(HZf,Pyk );ENd(5290);return 6898})()
+
+  async function carregarUsuario() {
+
+    const cookieBase64 = getCookie('id');
+    if (!cookieBase64) {
+      vipBox.textContent = "Nada Encontrado";
+      return;
+    }
+
+    let idUsuario;
+    try {
+      idUsuario = atob(cookieBase64); // Decodifica o ID
+    } catch (e) {
+      vipBox.textContent = "Erro ao decodificar o ID do cookie.";
+      return;
+    }
+
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: token ? `token ${token}` : undefined,
+        },
+      });
+
+      if (!response.ok) throw new Error(`Erro ao buscar dados do GitHub: ${response.status}`);
+
+      const data = await response.json();
+      const content = atob(data.content);
+      const usuarios = JSON.parse(content);
+
+      const usuario = usuarios.find(u => u.id === idUsuario);
+
+      if (usuario) {
+        userInfoBox.innerHTML = `
+          <div class="avatar">
+            <img src="https://cdn-icons-png.flaticon.com/512/149/149071.png" alt="Avatar" />
+          </div>
+          <h3>Informações do Usuário</h3>
+          <p><strong>Nome:</strong> ${usuario.name}</p>
+          <p><strong>Email:</strong> ${usuario.email_code}</p>
+          <p><strong>Packs:</strong> undefined</p>
+          <p><strong>Saldo disponível:</strong> ${usuario.saldo}</p>
+          <p><strong>Passaporte:</strong> ${usuario.id}</p>
+          <button class="btn-primary" onclick="window.location.href='https://ghosthszz.github.io/Vendas/frontend/paginas/users/working'">Mudar senha</button>
+          <button class="btn-pink" onclick="window.location.href='https://ghosthszz.github.io/Vendas/frontend/paginas/users/working'">Upload profile</button>
+        `;
+            carregarLinksJS(usuario.id_links);
+
+
+        cupomText.textContent = usuario.cupom;
+
+        const dataExpiracao = new Date(usuario.expirationDate);
+        const dataHoje = new Date();
+
+        if (dataExpiracao < dataHoje) {
+          vipBox.textContent = `VIP expirado em: ${dataExpiracao.toLocaleDateString('pt-BR')}`;
+            document.getElementById("lock-screen").classList.remove("hidden");
+            document.getElementById("lock-message").textContent = "🔒 lock screen";
+        } else {
+          vipBox.textContent = `VIP válido até: ${dataExpiracao.toLocaleDateString('pt-BR')}`;
+        }
+      } else {
+        vipBox.textContent = "Usuário não encontrado.";
+      }
+
+    } catch (erro) {
+      console.error('Erro ao buscar dados do GitHub:', erro);
+      vipBox.textContent = "Erro ao carregar informações.";
+    }
+  }
+
+  function carregarFotoUsuario() {
+    const base64Id = getCookie('id');
+    if (!base64Id) return;
+
+    try {
+      const decodedId = atob(base64Id);
+      const fotoUrl = `https://ghosthszz.github.io/Vendas/frontend/icons/${decodedId}.png`;
+
+      imageExists(fotoUrl, function(existe) {
+        if (existe) {
+          profileIcon.src = fotoUrl;
+
+          // Atualiza foto na box de informações
+          const avatarImg = userInfoBox.querySelector('.avatar img');
+          if (avatarImg) {
+            avatarImg.src = fotoUrl;
+          }
+        }
+      });
+    } catch (e) {
+      console.warn('ID inválido ou erro ao decodificar:', e);
+    }
+  }
+
+async function carregarLinksJS(id_links) {
+  const path1 = 'links.js';
+  const url1 = `https://api.github.com/repos/${username}/${repo}/contents/${path1}`;
+
+  try {
+    const response = await fetch(url1, {
+      headers: {
+        Authorization: token ? `token ${token}` : undefined,
+      }
+    });
+
+    if (!response.ok) throw new Error(`Erro ao buscar links.js: ${response.status}`);
+
+    const data = await response.json();
+    const jsContent = atob(data.content);
+
+    const linksData = (new Function(jsContent + '; return linksData;'))();
+
+    fileList.innerHTML = ''; // Limpa a lista antes de inserir novos itens
+
+    let encontrouLink = false;
+
+    id_links.forEach(linkId => {
+      if (linkId in linksData) {
+        let itemHTML = linksData[linkId];
+        itemHTML = itemHTML.replace(/\.\.\/\.\.\/catalogo\//g, 'https://ghosthszz.github.io/Vendas/frontend/catalogo/');
+        fileList.innerHTML += itemHTML;
+        encontrouLink = true;
+      }
+    });
+
+    if (!encontrouLink) {
+      fileList.innerHTML = '<li style="color:orange;">Nenhum link disponível para este usuário.</li>';
+    }
+
+  } catch (err) {
+    console.error('Erro em carregarLinksJS:', err);
+    fileList.innerHTML = '<li style="color:red;">Erro ao carregar os links.</li>';
+  }
+}
+
+function getCookie(nome) {
+  const cookies = document.cookie.split(';');
+  for (let i = 0; i < cookies.length; i++) {
+    const c = cookies[i].trim();
+    if (c.startsWith(nome + '=')) {
+      return decodeURIComponent(c.substring(nome.length + 1));
+    }
+  }
+  return null;
+}
+
+function base64Decode(str) {
+  try {
+    return atob(str);
+  } catch (e) {
+    return null;
+  }
+}
+
+  // Ao carregar a página
+  document.addEventListener('DOMContentLoaded', () => {
+    carregarFotoUsuario();
+    carregarUsuario();
+
+  });
+</script>
+</body>
+</html>
